@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31213.239
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XmlConfigInitialization", "XmlConfigInitialization\XmlConfigInitialization.csproj", "{1DEF8E34-7286-4C57-ABE1-E2E3CB005397}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestXmlConfig", "TestXmlConfig\TestXmlConfig.csproj", "{2F1DAC01-744C-4881-A6B8-B784EB1839BD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1DEF8E34-7286-4C57-ABE1-E2E3CB005397}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1DEF8E34-7286-4C57-ABE1-E2E3CB005397}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1DEF8E34-7286-4C57-ABE1-E2E3CB005397}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1DEF8E34-7286-4C57-ABE1-E2E3CB005397}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2F1DAC01-744C-4881-A6B8-B784EB1839BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2F1DAC01-744C-4881-A6B8-B784EB1839BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2F1DAC01-744C-4881-A6B8-B784EB1839BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2F1DAC01-744C-4881-A6B8-B784EB1839BD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9B89E225-4A3F-49A7-A079-2C3E549FB92B}
+	EndGlobalSection
+EndGlobal
