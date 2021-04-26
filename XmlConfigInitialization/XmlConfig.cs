@@ -178,10 +178,10 @@ namespace XmlConfigInitialization
         }
 
         /// <summary>
-        /// 删除指定键的节点
+        /// 删除指定键的项
         /// </summary>
         /// <param name="key"></param>
-        public bool Delete(string key, string nodeName = DEFAULT_NODE)
+        public bool DeleteValue(string key, string nodeName = DEFAULT_NODE)
         {
             try
             {

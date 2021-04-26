@@ -63,7 +63,7 @@ namespace TestXmlConfig.Controllers
 
         [HttpGet]
         public IActionResult DeleteNodeXml(string node)
-        {
+        {            
             _xmlConfig.DeleteNode(node);
             return Ok(new
             {
