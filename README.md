@@ -26,7 +26,24 @@
 
 ## 使用方式
 
-目前只支持在 `ASP.NET Core` 中以注入的方式使用.
+### 通过 `XmlConfigFactory` 方式获取 `XmlConfig` 对象.
+
+```csharp
+var _xmlConfig = XmlConfigFactory.GetSingletonInstance();
+
+或者
+
+var option = new XmlOptions()
+{
+    ConfigName = "config.xml",
+    Directory = "config",
+    AutoSave = true
+};
+var _xmlConfig = XmlConfigFactory.GetSingletonInstance(option);
+```
+
+
+### 在 `ASP.NET Core` 中以注入的方式获取 `XmlConfig` 对象.
 
 ```csharp
 // 自定义配置文件的配置信息
