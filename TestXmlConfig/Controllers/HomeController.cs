@@ -71,7 +71,16 @@ namespace TestXmlConfig.Controllers
             });
         }
 
-
+        [HttpGet]
+        public IActionResult SetSingletonXml(string key, string value, string node = "default")
+        {
+            var xmlConfig = XmlConfigFactory.GetSingletonInstance();
+            xmlConfig.SetValue(key, value, node);
+            return Ok(new
+            {
+                value = xmlConfig.GetValue(key, node)
+            });
+        }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

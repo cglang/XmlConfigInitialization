@@ -26,6 +26,31 @@ namespace XmlConfigInitialization
         /// </summary>
         private readonly bool _autoSave;
 
+        private XmlConfig(XmlOptions option = default)
+        {
+            if (option == default)
+            {
+                _fullName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.xml");
+                _autoSave = false;
+            }
+            else
+            {
+                _fullName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, option.Directory, option.ConfigName);
+                _autoSave = option.AutoSave;
+            }
+
+            if (!File.Exists(_fullName))
+            {
+                Directory.CreateDirectory(Path.Combine(AppDomain.CurrentDomain.BaseDirectory));
+
+                _doc.AppendChild(_doc.CreateXmlDeclaration("1.0", "UTF-8", null));
+                _doc.AppendChild(_doc.CreateElement("root"));
+                _doc.Save(_fullName);
+            }
+
+            _doc.Load(_fullName);
+        }
+
         public XmlConfig(IOptions<XmlOptions> options)
         {
             _fullName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, options.Value.Directory, options.Value.ConfigName);
@@ -42,6 +67,15 @@ namespace XmlConfigInitialization
             }
 
             _doc.Load(_fullName);
+        }
+
+        /// <summary>
+        /// 创建对象
+        /// </summary>
+        /// <returns></returns>
+        public static XmlConfig CreateObject(XmlOptions option = default)
+        {
+            return new XmlConfig(option);
         }
 
         /// <summary>
