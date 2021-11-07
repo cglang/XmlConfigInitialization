@@ -2,13 +2,14 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using System.Xml;
 
 namespace XmlConfigInitialization
 {
     public class XmlConfig
     {
-        public const string DEFAULT_NODE = "default";
+        private const string DefaultNode = "default";
 
         /// <summary>
         /// xml文档
@@ -23,7 +24,7 @@ namespace XmlConfigInitialization
         /// <summary>
         /// 自动保存
         /// </summary>
-        private readonly bool _autoSave = true;
+        private readonly bool _autoSave;
 
         public XmlConfig(IOptions<XmlOptions> options)
         {
@@ -60,18 +61,21 @@ namespace XmlConfigInitialization
             }
         }
 
+        #region 同步版本
+
         /// <summary>
         /// 获取指定键的值
         /// </summary>
         /// <param name="key"></param>
+        /// <param name="nodeName"></param>
         /// <returns></returns>
-        public string GetValue(string key, string nodeName = DEFAULT_NODE)
+        public string GetValue(string key, string nodeName = DefaultNode)
         {
             try
             {
                 CreateNode(nodeName);
-                XmlElement selectEle = (XmlElement)_doc.DocumentElement.SelectSingleNode($"/root/{nodeName}/item[@key='{key}']");
-                return selectEle == null ? "" : selectEle.GetAttribute("value");
+                XmlElement selectEle = (XmlElement)_doc.DocumentElement?.SelectSingleNode($"/root/{nodeName}/item[@key='{key}']");
+                return selectEle == null ? "" : selectEle.InnerText;
             }
             catch
             {
@@ -79,27 +83,31 @@ namespace XmlConfigInitialization
             }
         }
 
+
         /// <summary>
         /// 更改指定键的值 没有则添加
         /// </summary>
-        /// <param name="xmlNode"></param>
-        public bool SetValue(string key, string value, string nodeName = DEFAULT_NODE)
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        /// <param name="nodeName"></param>
+        /// <returns></returns>
+        public bool SetValue(string key, string value, string nodeName = DefaultNode)
         {
             try
             {
                 CreateNode(nodeName);
-                XmlNode keyValue = _doc.DocumentElement.SelectSingleNode($"/root/{nodeName}");
-                XmlElement node = (XmlElement)_doc.DocumentElement.SelectSingleNode($"/root/{nodeName}/item[@key='{key}']");
+                var keyValue = _doc.DocumentElement?.SelectSingleNode($"/root/{nodeName}");
+                var node = (XmlElement)_doc.DocumentElement?.SelectSingleNode($"/root/{nodeName}/item[@key='{key}']");
                 if (node == null)
                 {
-                    XmlElement newnode = _doc.CreateElement("item");
+                    var newnode = _doc.CreateElement("item");
                     newnode.SetAttribute("key", key);
-                    newnode.SetAttribute("value", value);
-                    keyValue.AppendChild(newnode);
+                    newnode.InnerText = value;
+                    keyValue?.AppendChild(newnode);
                 }
                 else
                 {
-                    node.SetAttribute("value", value);
+                    node.InnerText = value;
                 }
 
                 if (_autoSave) Save();
@@ -115,16 +123,20 @@ namespace XmlConfigInitialization
         /// 获取所有的键
         /// </summary>
         /// <returns></returns>
-        public List<string> GetAllKey(string nodeName = DEFAULT_NODE)
+        public List<string> GetAllKey(string nodeName = DefaultNode)
         {
             try
             {
-                List<string> keys = new List<string>();
-                XmlElement selectEle = (XmlElement)_doc.DocumentElement.SelectSingleNode($"/root/{nodeName}");
-                foreach (XmlElement node in selectEle)
+                var keys = new List<string>();
+                var selectEle = (XmlElement)_doc.DocumentElement?.SelectSingleNode($"/root/{nodeName}");
+                if (selectEle != null)
                 {
-                    keys.Add(node.GetAttribute("key"));
+                    foreach (XmlElement node in selectEle)
+                    {
+                        keys.Add(node.GetAttribute("key"));
+                    }
                 }
+
                 return keys;
             }
             catch
@@ -137,16 +149,20 @@ namespace XmlConfigInitialization
         /// 获取所有的键
         /// </summary>
         /// <returns></returns>
-        public List<string> GetAllValue(string nodeName = DEFAULT_NODE)
+        public List<string> GetAllValue(string nodeName = DefaultNode)
         {
             try
             {
-                List<string> keys = new List<string>();
-                XmlElement selectEle = (XmlElement)_doc.DocumentElement.SelectSingleNode($"/root/{nodeName}");
-                foreach (XmlElement node in selectEle)
+                var keys = new List<string>();
+                var selectEle = (XmlElement)_doc.DocumentElement?.SelectSingleNode($"/root/{nodeName}");
+                if (selectEle != null)
                 {
-                    keys.Add(node.GetAttribute("value"));
+                    foreach (XmlElement node in selectEle)
+                    {
+                        keys.Add(node.InnerText);
+                    }
                 }
+
                 return keys;
             }
             catch
@@ -159,16 +175,20 @@ namespace XmlConfigInitialization
         /// 获取所有的键/值
         /// </summary>
         /// <returns></returns>
-        public Dictionary<string, string> GetAllKeyValue(string nodeName = DEFAULT_NODE)
+        public Dictionary<string, string> GetAllKeyValue(string nodeName = DefaultNode)
         {
             try
             {
-                Dictionary<string, string> keyValues = new Dictionary<string, string>();
-                XmlElement selectEle = (XmlElement)_doc.DocumentElement.SelectSingleNode($"/root/{nodeName}");
-                foreach (XmlElement node in selectEle)
+                var keyValues = new Dictionary<string, string>();
+                var selectEle = (XmlElement)_doc.DocumentElement?.SelectSingleNode($"/root/{nodeName}");
+                if (selectEle != null)
                 {
-                    keyValues.Add(node.GetAttribute("key"), node.GetAttribute("value"));
+                    foreach (XmlElement node in selectEle)
+                    {
+                        keyValues.Add(node.GetAttribute("key"), node.InnerText);
+                    }
                 }
+
                 return keyValues;
             }
             catch
@@ -181,15 +201,15 @@ namespace XmlConfigInitialization
         /// 删除指定键的项
         /// </summary>
         /// <param name="key"></param>
-        public bool DeleteValue(string key, string nodeName = DEFAULT_NODE)
+        /// <param name="nodeName"></param>
+        public bool DeleteValue(string key, string nodeName = DefaultNode)
         {
             try
             {
                 CreateNode(nodeName);
-                XmlNode keyValue = _doc.DocumentElement.SelectSingleNode($"/root/{nodeName}");
-                XmlNode selectEle = _doc.DocumentElement.SelectSingleNode($"/root/{nodeName}/item[@key='{key}']");
-                keyValue.RemoveChild(selectEle);
-
+                var keyValue = _doc.DocumentElement?.SelectSingleNode($"/root/{nodeName}");
+                var selectEle = _doc.DocumentElement?.SelectSingleNode($"/root/{nodeName}/item[@key='{key}']");
+                if (selectEle != null) keyValue?.RemoveChild(selectEle);
                 if (_autoSave) Save();
             }
             catch
@@ -208,30 +228,21 @@ namespace XmlConfigInitialization
         {
             try
             {
-                List<string> nodes = new List<string>();
-                XmlElement selectEle = (XmlElement)_doc.DocumentElement.SelectSingleNode($"/root");
-                foreach (XmlElement node in selectEle)
+                var nodes = new List<string>();
+                var selectEle = (XmlElement)_doc.DocumentElement?.SelectSingleNode($"/root");
+                if (selectEle != null)
                 {
-                    nodes.Add(node.Name);
+                    foreach (XmlElement node in selectEle)
+                    {
+                        nodes.Add(node.Name);
+                    }
                 }
+
                 return nodes;
             }
             catch
             {
                 return new List<string>();
-            }
-        }
-
-
-        /// <summary>
-        /// 检查创建节点
-        /// </summary>
-        /// <param name="nodeName"></param>
-        private void CreateNode(string nodeName = DEFAULT_NODE)
-        {
-            if (_doc.DocumentElement.SelectSingleNode($"/root/{nodeName}") == null)
-            {
-                _doc.DocumentElement.AppendChild(_doc.CreateElement(nodeName));
             }
         }
 
@@ -244,12 +255,12 @@ namespace XmlConfigInitialization
         {
             try
             {
-                XmlNode keyValue = _doc.DocumentElement.SelectSingleNode($"/root");
-                XmlNode selectEle = _doc.DocumentElement.SelectSingleNode($"/root/{nodeName}");
+                var keyValue = _doc.DocumentElement?.SelectSingleNode($"/root");
+                var selectEle = _doc.DocumentElement?.SelectSingleNode($"/root/{nodeName}");
 
                 if (selectEle != null)
                 {
-                    keyValue.RemoveChild(selectEle);
+                    keyValue?.RemoveChild(selectEle);
                     if (_autoSave) Save();
                 }
 
@@ -260,5 +271,111 @@ namespace XmlConfigInitialization
                 return false;
             }
         }
+
+        /// <summary>
+        /// 检查创建节点
+        /// </summary>
+        /// <param name="nodeName"></param>
+        private void CreateNode(string nodeName = DefaultNode)
+        {
+            if (_doc.DocumentElement?.SelectSingleNode($"/root/{nodeName}") == null)
+            {
+                _doc.DocumentElement?.AppendChild(_doc.CreateElement(nodeName));
+            }
+        }
+        #endregion
+
+        #region 异步版本
+
+        /// <summary>
+        /// 获取指定键的值
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="nodeName"></param>
+        /// <returns></returns>
+        public async Task<string> GetValueAsync(string key, string nodeName = DefaultNode)
+        {
+            string func() => GetValue(key, nodeName);
+            return await Task.Run(func);
+        }
+
+
+        /// <summary>
+        /// 更改指定键的值 没有则添加
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        /// <param name="nodeName"></param>
+        /// <returns></returns>
+        public async Task<bool> SetValueAsync(string key, string value, string nodeName = DefaultNode)
+        {
+            bool func() => SetValue(key, value, nodeName);
+            return await Task.Run(func);
+        }
+
+        /// <summary>
+        /// 获取所有的键
+        /// </summary>
+        /// <returns></returns>
+        public async Task<List<string>> GetAllKeyAsync(string nodeName = DefaultNode)
+        {
+            List<string> func() => GetAllKey(nodeName);
+            return await Task.Run(func);
+        }
+
+        /// <summary>
+        /// 获取所有的键
+        /// </summary>
+        /// <returns></returns>
+        public async Task<List<string>> GetAllValueAsync(string nodeName = DefaultNode)
+        {
+            List<string> func() => GetAllValue(nodeName);
+            return await Task.Run(func);
+        }
+
+        /// <summary>
+        /// 获取所有的键/值
+        /// </summary>
+        /// <returns></returns>
+        public async Task<Dictionary<string, string>> GetAllKeyValueAsync(string nodeName = DefaultNode)
+        {
+            Dictionary<string, string> func() => GetAllKeyValue(nodeName);
+            return await Task.Run(func);
+        }
+
+        /// <summary>
+        /// 删除指定键的项
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="nodeName"></param>
+        public async Task<bool> DeleteValueAsync(string key, string nodeName = DefaultNode)
+        {
+            bool func() => DeleteValue(key, nodeName);
+            return await Task.Run(func);
+        }
+
+
+        /// <summary>
+        /// 获取所有的节点名称
+        /// </summary>
+        /// <returns></returns>
+        public async Task<List<string>> GetNodesAsync()
+        {
+            List<string> func() => GetNodes();
+            return await Task.Run(func);
+        }
+
+        /// <summary>
+        /// 删除节点
+        /// </summary>
+        /// <param name="nodeName"></param>
+        /// <returns></returns>
+        public async Task<bool> DeleteNodeAsync(string nodeName)
+        {
+            bool func() => DeleteNode(nodeName);
+            return await Task.Run(func);
+        }
+
+        #endregion
     }
 }

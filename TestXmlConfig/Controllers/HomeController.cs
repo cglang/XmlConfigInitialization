@@ -32,7 +32,7 @@ namespace TestXmlConfig.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetXml(string key, string node = XmlConfig.DEFAULT_NODE)
+        public IActionResult GetXml(string key, string node = "default")
         {
             return Ok(new
             {
@@ -45,14 +45,14 @@ namespace TestXmlConfig.Controllers
         {
             return Ok(new
             {
-                value1 = _xmlConfig.GetValue("aa", XmlConfig.DEFAULT_NODE),
+                value1 = _xmlConfig.GetValue("aa", "default"),
                 value2 = _xmlConfig.GetNodes(),
                 value3 = _xmlConfig.GetAllValue()
             });
         }
 
         [HttpGet]
-        public IActionResult SetXml(string key, string value, string node = XmlConfig.DEFAULT_NODE)
+        public IActionResult SetXml(string key, string value, string node = "default")
         {
             _xmlConfig.SetValue(key, value, node);
             return Ok(new
