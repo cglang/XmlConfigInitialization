@@ -6,13 +6,13 @@
 
         private static XmlOptions _option;
 
-        private static readonly object _lock = new object();
+        private static readonly object Lock = new object();
 
         public static XmlConfig GetSingletonInstance()
         {
             if (_xmlConfig == null)
             {
-                lock (_lock)
+                lock (Lock)
                 {
                     if (_xmlConfig == null)
                     {

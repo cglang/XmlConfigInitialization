@@ -329,8 +329,8 @@ namespace XmlConfigInitialization
         /// <returns></returns>
         public async Task<string> GetValueAsync(string key, string nodeName = DefaultNode)
         {
-            string func() => GetValue(key, nodeName);
-            return await Task.Run(func);
+            string Func() => GetValue(key, nodeName);
+            return await Task.Run(Func);
         }
 
 
@@ -343,8 +343,8 @@ namespace XmlConfigInitialization
         /// <returns></returns>
         public async Task<bool> SetValueAsync(string key, string value, string nodeName = DefaultNode)
         {
-            bool func() => SetValue(key, value, nodeName);
-            return await Task.Run(func);
+            bool Func() => SetValue(key, value, nodeName);
+            return await Task.Run(Func);
         }
 
         /// <summary>
@@ -353,8 +353,8 @@ namespace XmlConfigInitialization
         /// <returns></returns>
         public async Task<List<string>> GetAllKeyAsync(string nodeName = DefaultNode)
         {
-            List<string> func() => GetAllKey(nodeName);
-            return await Task.Run(func);
+            List<string> Func() => GetAllKey(nodeName);
+            return await Task.Run(Func);
         }
 
         /// <summary>
@@ -363,8 +363,8 @@ namespace XmlConfigInitialization
         /// <returns></returns>
         public async Task<List<string>> GetAllValueAsync(string nodeName = DefaultNode)
         {
-            List<string> func() => GetAllValue(nodeName);
-            return await Task.Run(func);
+            List<string> Func() => GetAllValue(nodeName);
+            return await Task.Run(Func);
         }
 
         /// <summary>
@@ -373,8 +373,8 @@ namespace XmlConfigInitialization
         /// <returns></returns>
         public async Task<Dictionary<string, string>> GetAllKeyValueAsync(string nodeName = DefaultNode)
         {
-            Dictionary<string, string> func() => GetAllKeyValue(nodeName);
-            return await Task.Run(func);
+            Dictionary<string, string> Func() => GetAllKeyValue(nodeName);
+            return await Task.Run(Func);
         }
 
         /// <summary>
@@ -384,8 +384,8 @@ namespace XmlConfigInitialization
         /// <param name="nodeName"></param>
         public async Task<bool> DeleteValueAsync(string key, string nodeName = DefaultNode)
         {
-            bool func() => DeleteValue(key, nodeName);
-            return await Task.Run(func);
+            bool Func() => DeleteValue(key, nodeName);
+            return await Task.Run(Func);
         }
 
 
@@ -395,8 +395,8 @@ namespace XmlConfigInitialization
         /// <returns></returns>
         public async Task<List<string>> GetNodesAsync()
         {
-            List<string> func() => GetNodes();
-            return await Task.Run(func);
+            List<string> Func() => GetNodes();
+            return await Task.Run(Func);
         }
 
         /// <summary>
@@ -406,8 +406,8 @@ namespace XmlConfigInitialization
         /// <returns></returns>
         public async Task<bool> DeleteNodeAsync(string nodeName)
         {
-            bool func() => DeleteNode(nodeName);
-            return await Task.Run(func);
+            bool Func() => DeleteNode(nodeName);
+            return await Task.Run(Func);
         }
 
         #endregion
