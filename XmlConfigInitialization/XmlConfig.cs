@@ -28,20 +28,14 @@ namespace XmlConfigInitialization
 
         private XmlConfig(XmlOptions option = default)
         {
-            if (option == default)
-            {
-                _fullName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.xml");
-                _autoSave = false;
-            }
-            else
-            {
-                _fullName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, option.Directory, option.ConfigName);
-                _autoSave = option.AutoSave;
-            }
+            if (option == null) option = new XmlOptions();
+
+            _fullName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, option.Directory, option.ConfigName);
+            _autoSave = option.AutoSave;
 
             if (!File.Exists(_fullName))
             {
-                Directory.CreateDirectory(Path.Combine(AppDomain.CurrentDomain.BaseDirectory));
+                Directory.CreateDirectory(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, option.Directory));
 
                 _doc.AppendChild(_doc.CreateXmlDeclaration("1.0", "UTF-8", null));
                 _doc.AppendChild(_doc.CreateElement("root"));
