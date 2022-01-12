@@ -39,7 +39,8 @@ var option = new XmlOptions()
     Directory = "config",
     AutoSave = true
 };
-var _xmlConfig = XmlConfigFactory.GetSingletonInstance(option);
+XmlConfigFactory.InitXmlOptions(option);
+var _xmlConfig = XmlConfigFactory.GetSingletonInstance();
 ```
 
 
