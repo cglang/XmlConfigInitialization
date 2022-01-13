@@ -2,19 +2,27 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text.Json;
+using System.Text.Unicode;
 using System.Threading.Tasks;
 using System.Xml;
+using System.Text.Encodings.Web;
 
 namespace XmlConfigInitialization
 {
     public class XmlConfig
     {
+        private const string ITEM = "item";
+        private const string KEY = "key";
+
         private const string DefaultNode = "default";
+
+        JsonSerializerOptions options = new() { Encoder = JavaScriptEncoder.Create(UnicodeRanges.All) };
 
         /// <summary>
         /// xml文档
         /// </summary>
-        private readonly XmlDocument _doc = new XmlDocument();
+        private readonly XmlDocument _doc = new();
 
         /// <summary>
         /// 配置文件全名
@@ -103,7 +111,7 @@ namespace XmlConfigInitialization
             {
                 CreateNode(nodeName);
                 XmlElement selectEle = (XmlElement)_doc.DocumentElement?.SelectSingleNode($"/root/{nodeName}/item[@key='{key}']");
-                return selectEle == null ? "" : selectEle.InnerText;
+                return selectEle == null ? string.Empty : selectEle.InnerText;
             }
             catch
             {
@@ -111,6 +119,16 @@ namespace XmlConfigInitialization
             }
         }
 
+        /// <summary>
+        /// 获取指定键的值
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="nodeName"></param>
+        /// <returns></returns>
+        public T GetValue<T>(string key, string nodeName = DefaultNode)
+        {
+            return JsonSerializer.Deserialize<T>(GetValue(key, nodeName));
+        }
 
         /// <summary>
         /// 更改指定键的值 没有则添加
@@ -128,7 +146,7 @@ namespace XmlConfigInitialization
                 var node = (XmlElement)_doc.DocumentElement?.SelectSingleNode($"/root/{nodeName}/item[@key='{key}']");
                 if (node == null)
                 {
-                    var newnode = _doc.CreateElement("item");
+                    var newnode = _doc.CreateElement(ITEM);
                     newnode.SetAttribute("key", key);
                     newnode.InnerText = value;
                     keyValue?.AppendChild(newnode);
@@ -148,6 +166,18 @@ namespace XmlConfigInitialization
         }
 
         /// <summary>
+        /// 更改指定键的值 没有则添加
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        /// <param name="nodeName"></param>
+        /// <returns></returns>
+        public bool SetValue<T>(string key, T value, string nodeName = DefaultNode)
+        {
+            return SetValue(key, JsonSerializer.Serialize(value), nodeName);
+        }
+
+        /// <summary>
         /// 获取所有的键
         /// </summary>
         /// <returns></returns>
@@ -161,7 +191,7 @@ namespace XmlConfigInitialization
                 {
                     foreach (XmlElement node in selectEle)
                     {
-                        keys.Add(node.GetAttribute("key"));
+                        keys.Add(node.GetAttribute(KEY));
                     }
                 }
 
@@ -213,7 +243,7 @@ namespace XmlConfigInitialization
                 {
                     foreach (XmlElement node in selectEle)
                     {
-                        keyValues.Add(node.GetAttribute("key"), node.InnerText);
+                        keyValues.Add(node.GetAttribute(KEY), node.InnerText);
                     }
                 }
 
@@ -265,7 +295,6 @@ namespace XmlConfigInitialization
                         nodes.Add(node.Name);
                     }
                 }
-
                 return nodes;
             }
             catch
@@ -327,6 +356,17 @@ namespace XmlConfigInitialization
             return await Task.Run(Func);
         }
 
+        /// <summary>
+        /// 获取指定键的值
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="nodeName"></param>
+        /// <returns></returns>
+        public async Task<T> GetValueAsync<T>(string key, string nodeName = DefaultNode)
+        {
+            T Func() => GetValue<T>(key, nodeName);
+            return await Task.Run(Func);
+        }
 
         /// <summary>
         /// 更改指定键的值 没有则添加
@@ -335,7 +375,7 @@ namespace XmlConfigInitialization
         /// <param name="value"></param>
         /// <param name="nodeName"></param>
         /// <returns></returns>
-        public async Task<bool> SetValueAsync(string key, string value, string nodeName = DefaultNode)
+        public async Task<bool> SetValueAsync<T>(string key, T value, string nodeName = DefaultNode)
         {
             bool Func() => SetValue(key, value, nodeName);
             return await Task.Run(Func);
