@@ -17,7 +17,7 @@ namespace XmlConfigInitialization
 
         private const string DefaultNode = "default";
 
-        JsonSerializerOptions options = new() { Encoder = JavaScriptEncoder.Create(UnicodeRanges.All) };
+        private readonly JsonSerializerOptions options = new() { Encoder = JavaScriptEncoder.Create(UnicodeRanges.All) };
 
         /// <summary>
         /// xml文档
@@ -127,7 +127,7 @@ namespace XmlConfigInitialization
         /// <returns></returns>
         public T GetValue<T>(string key, string nodeName = DefaultNode)
         {
-            return JsonSerializer.Deserialize<T>(GetValue(key, nodeName));
+            return JsonSerializer.Deserialize<T>(GetValue(key, nodeName), options);
         }
 
         /// <summary>
@@ -174,7 +174,7 @@ namespace XmlConfigInitialization
         /// <returns></returns>
         public bool SetValue<T>(string key, T value, string nodeName = DefaultNode)
         {
-            return SetValue(key, JsonSerializer.Serialize(value), nodeName);
+            return SetValue(key, JsonSerializer.Serialize(value, options), nodeName);
         }
 
         /// <summary>
