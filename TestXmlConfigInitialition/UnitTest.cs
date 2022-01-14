@@ -1,4 +1,5 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Threading.Tasks;
 using XmlConfigInitialization;
 
 namespace TestXmlConfigInitialition
@@ -11,25 +12,27 @@ namespace TestXmlConfigInitialition
         [TestMethod]
         public void TestBasic()
         {
-            var decide = config.SetValue("test", "test");
-            var text = config.GetValue("test");
-            var delete = config.DeleteValue("test");
+            var decide = config.SetValue("key", "value");
+            var text = config.GetValue("key");
+            var delete = config.DeleteValue("key");
             var count = config.GetAllKey().Count;
 
             Assert.AreEqual(true, decide);
-            Assert.AreEqual("test", text);
+            Assert.AreEqual("value", text);
             Assert.AreEqual(true, delete);
             Assert.AreEqual(0, count);
         }
 
         [TestMethod]
-        public void TestAsync()
+        public async Task TestAsync()
         {
             var names = new[] { "张三", "李四", "王五" };
-            var decide = config.SetValue("test2", names);
-            var names2 = config.GetValue<string[]>("test2");
+            var decide = await config.SetValueAsync("key2", names);
+            var names2 = await config.GetValueAsync<string[]>("key2");
+            var delete = await config.DeleteValueAsync("key2");
 
             Assert.AreEqual(true, decide);
+            Assert.AreEqual(true, delete);
             Assert.AreEqual(names[0], names2[0]);
         }
     }
