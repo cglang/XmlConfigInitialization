@@ -10,16 +10,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <root>
   <default>
-    <item key="name" value="cglang" />
-    <item key="age" value="22" />
+    <item key="name">cglang</item>
+    <item key="age">22</item>
   </default>
   <node1>
-    <item key="test1" value="value1" />
-    <item key="test2" value="value2" />
+    <item key="test1">value1</item>
+    <item key="test2">value2</item>
   </node1>
   <node2>
-    <item key="test1" value="value3" />
-    <item key="test2" value="value4" />
+    <item key="test1">value3</item>
+    <item key="test2">value4</item>
   </node2>
 </root>
 ```

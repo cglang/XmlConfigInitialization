@@ -35,5 +35,18 @@ namespace TestXmlConfigInitialition
             Assert.AreEqual(true, delete);
             Assert.AreEqual(names[0], names2[0]);
         }
+
+        [TestMethod]
+        public void TestInit()
+        {
+            config.SetValue("name", "cglang");
+            config.SetValue("age", "22");
+
+            config.SetValue("test1", "value1", "node1");
+            config.SetValue("test2", "value2", "node1");
+
+            config.SetValue("test1", "value3", "node2");
+            config.SetValue("test2", "value4", "node2");
+        }
     }
 }
